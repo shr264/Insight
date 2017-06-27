@@ -1,9 +1,9 @@
 Rent or Buy
 -----------
 
-The goal of my Insight project was to create a webapp &lt;www.rentorbuy.press&gt; that helps users navigate the NYC residential real estate martket based on permits information. The permits data is available from <https://data.cityofnewyork.us/Housing-Development/DOB-Permit-Issuance/ipu4-2q9a> and the home values and rents data is available from Zillow <https://www.zillow.com/research/data/>. The proejct can be divided into three part. The first part of the project was to understand the causal impacts of permits on rents or home values, or vice versa. The second was to incorporate permits information into a predictive model. Finally, we tried to understand, which permits, afftect home values and rents.
+The goal of my Insight project was to create a web app &lt;www.rentorbuy.press&gt; that helps users navigate the NYC residential real estate market based on permits information. The permits data is available from <https://data.cityofnewyork.us/Housing-Development/DOB-Permit-Issuance/ipu4-2q9a> and the home values and rents data is available from Zillow <https://www.zillow.com/research/data/>. The project can be divided into three parts. The first part of the project was to understand the causal impacts of permits on rents or home values, or vice versa. The second was to incorporate permits information into a predictive model. Finally, we tried to understand, which permits, if any, affect home values and rents.
 
-For the first part, we used the concept of granger causality <https://en.wikipedia.org/wiki/Granger_causality> for time series. This is a statistical test for determining whether onse time series is helpful in forecasting another. However, this is a method for univartiate time series, so I used a Singular Value Decompostion for reduce the dimensionality and ran the granger test on the principal eigenvectors.
+For the first part, we used the concept of Granger causality <https://en.wikipedia.org/wiki/Granger_causality> for time series. This is a statistical test for determining whether one time series is helpful in forecasting another. However, this is a method for univaritate time series, so I used a Singular Value Decomposition for dimensionality reduction and ran the Granger test on the principal eigenvectors.
 
 | Predictor | Response |     F|
 |:----------|:---------|-----:|
@@ -18,7 +18,7 @@ For the predictive modeling we are interested in leveraging both home values and
 
 ![](Readme_files/figure-markdown_github/predict-1.png)![](Readme_files/figure-markdown_github/predict-2.png)
 
-Finally, we look at the non-zero estimates from our VAR and BAR outputs to figure out what permits have the largest effects on home values and rents. The plots below show the largest impactors on rents from the Bayesian and Frequntist perspectives on our zip code at Insight. The results are a bit whacky due to limited data, so I wouldn't read too much into them, but here are the plots. The green dot shows the area we are interested in. The blue dots show the largest postive impacts, while the red dots show the largest negative impacts.
+Finally, we look at the non-zero estimates from our VAR and BAR outputs to figure out what permits have the largest effects on home values and rents. The plots below show the largest impacts on rents from the Bayesian and Frequntist perspectives on our zip code at Insight. The results are a bit whacky due to limited data, so I wouldn't read too much into them, but here are the plots. The green dot shows the area we are interested in. The blue dots show the largest positive impacts, while the red dots show the largest negative impacts.
 
 ![Bayesian Variable Selection](Screen%20Shot%202017-06-25%20at%208.18.41%20PM.png)
 
