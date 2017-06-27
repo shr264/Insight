@@ -14,11 +14,13 @@ For the first part, we used the concept of Granger causality <https://en.wikiped
 
 The table clearly indicates that the probability that Permits have a causal effect on Home values and Rents is much higher than the other way round.
 
-For the predictive modeling we are interested in leveraging both home values and rent information as well as permits data from all neighborhoods. Thus we use an ℓ<sub>1</sub> regularized Vector Autoregressive model (VAR), a Bayesian Autoregressive model (BAR) with a horseshoe prior <http://proceedings.mlr.press/v5/carvalho09a/carvalho09a.pdf>, a Recurrent Neural Network (RNN) with an LSTM layer and compared them Facebook's Prophet <https://facebookincubator.github.io/prophet/>. For the VAR, RNN and BAR models we used 2 autoregressive terms.
+For the predictive modeling we are interested in leveraging both home values and rent information as well as permits data from all neighborhoods. Thus we use an L1 regularized Vector Autoregressive model (VAR), a Bayesian Autoregressive model (BAR) with a horseshoe prior <http://proceedings.mlr.press/v5/carvalho09a/carvalho09a.pdf>, a Recurrent Neural Network (RNN) with an LSTM layer and compared them Facebook's Prophet <https://facebookincubator.github.io/prophet/>. For the VAR, RNN and BAR models we used 2 autoregressive terms.
 
 ![](Readme_files/figure-markdown_github/predict-1.png)![](Readme_files/figure-markdown_github/predict-2.png)
 
-Finally, we look at the non-zero estimates from our VAR and BAR outputs to figure out what permits have the largest effects on home values and rents. The plots below show the largest impacts on rents from the Bayesian and Frequntist perspectives on our zip code at Insight. The results are a bit whacky due to limited data, so I wouldn't read too much into them, but here are the plots. The green dot shows the area we are interested in. The blue dots show the largest positive impacts, while the red dots show the largest negative impacts.
+In this case, it turns out that the simplest model - the L1-VAR has the best performance in terms of predictive ability. However, in terms of model selection though, we have a slightly different scenario.
+
+The pupose of model selection is to understand which permits have the biggest impacts on rents and home values. Any non-zero coefficient from our VAR and BAR indicates an effect on home values and rents. To figure out what permits have the largest effects we look at the largest coeffcients. The green dot shows the area we are interested in (in this case 10010, the zip code where Insight's office is located). The blue dots show the largest positive impacts, while the red dots show the largest negative impacts. The Bayesian verson looks more plausible simply because the point are clustered closer together. A word of warning about the Frequntist method: we should be cautious in out interpretation despite asymptotic guarantees of convergence <https://arxiv.org/pdf/1311.4175.pdf> due to limited data. In additon, Bayesian methods usually work better with a small sample size.
 
 ![Bayesian Variable Selection](Screen%20Shot%202017-06-25%20at%208.18.41%20PM.png)
 
