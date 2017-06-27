@@ -228,8 +228,8 @@ def findLassoAlphaFcst(alpha,y,X, returnPred = False):
     else:
         return mean_squared_error(y_test, prediction)
 
-def findBayesHSPred(y,X,nbhd='Gramercy Park and Murray Hill',
-                    categ = 'rents'):
+def findBayesHSPred(y,X,categ = 'rents',
+                    nbhd='Gramercy Park and Murray Hill'):
     y = y[categ+nbhd]
     X_train, X_test = X.loc['2013-10-01':'2016-04-01'], X.loc['2016-05-01':'2017-04-01']
     y_train, y_test = y.loc['2013-10-01':'2016-04-01'], y.loc['2016-05-01':'2017-04-01']

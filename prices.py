@@ -27,6 +27,7 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
+import pystan
 
 os.chdir('/Users/syedrahman/Documents/Summer2017/Insight/Project/HousingPermits') ### Pro
 #os.chdir('/Users/syedrahman/Documents/Summer2017/Insight/HousingPermits') ### Air
@@ -100,11 +101,12 @@ np.sqrt(prophetPreds[1])
 rnnPreds = findRNNPreds(yP,X, categ = 'prices')   
 np.sqrt(rnnPreds[1])
 
-bayesPreds = findBayesHSPred(yP,X, categ = 'prices')
+bayesPreds = findBayesHSPred(yP,X, categ = 'prices', 
+                             nbhd = 'Gramercy Park and Murray Hill')
 
 methods = ['l1-VAR','Prophet','RNN','Bayes']
-mseVals = [np.sqrt(mean_squared_error(pricePredsVAR[0][0]['rentsGramercy Park and Murray Hill'],
- rentPredsVAR[0][1]['rentsGramercy Park and Murray Hill'])),
+mseVals = [np.sqrt(mean_squared_error(pricePredsVAR[0][0]['pricesGramercy Park and Murray Hill'],
+ pricePredsVAR[0][1]['pricesGramercy Park and Murray Hill'])),
     np.sqrt(prophetPreds[1]), 
     np.sqrt(rnnPreds[1]),
     np.sqrt(bayesPreds[1])]
