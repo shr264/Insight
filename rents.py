@@ -30,8 +30,6 @@ from sklearn.preprocessing import MinMaxScaler
 import numpy
 import pandas
 
-os.chdir('/Users/syedrahman/Documents/Summer2017/Insight/Project/HousingPermits')
-
 from helperfunctions import (findLassoPreds, findLassoAlpha, findProphetPreds, 
                              findRNNPreds, findBayesHSPred)
 

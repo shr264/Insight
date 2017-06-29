@@ -29,9 +29,6 @@ from keras.layers import LSTM
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 import pystan
 
-os.chdir('/Users/syedrahman/Documents/Summer2017/Insight/Project/HousingPermits') ### Pro
-#os.chdir('/Users/syedrahman/Documents/Summer2017/Insight/HousingPermits') ### Air
-
 from helperfunctions import (findLassoPreds, findLassoAlpha, findProphetPreds, 
                              findRNNPreds, findBayesHSPred)
  
