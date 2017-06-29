@@ -14,7 +14,8 @@ import numpy as np
 import os
 os.chdir('/Users/syedrahman/Documents/Summer2017/Insight/Project/HousingPermitsInsight')
 
-from helperfunctions import (createPermitsData, createPermitByNbhd)
+from helperfunctions import (createPermitsData, createPermitByNbhd, 
+                             createPricesByNbhd, createRentsByNbhd)
 
  
 
