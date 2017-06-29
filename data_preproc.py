@@ -53,9 +53,9 @@ for nbhd in nbhds[1:]:
     permitsData = pd.concat([permitsData,createPermitByNbhd(nbhd,permits)], 
                                  axis = 1)
 
-permitsData['Date'] = permitsData.index
+permitsData['date'] = permitsData.index
 permitsData = permitsData.dropna(axis=0, how='any')
-permitsData.drop('Date', axis = 1).to_sql('final_permits_data_table',
+permitsData.drop('date', axis = 1).to_sql('final_permits_data_table',
                     engine, if_exists='replace')
 
 
@@ -63,18 +63,18 @@ permitsData.drop('Date', axis = 1).to_sql('final_permits_data_table',
 sql_query_prices = """
 SELECT 
 *
-FROM home_values_table a
+FROM home_values_table
 LEFT JOIN
-nbhdtable b ON a.zip_code = b.zip_code
+nbhdtable ON home_values_table.regionname = nbhdtable.zip_code
 ;
 """
 prices = pd.read_sql_query(sql_query_prices,con)
 nbhds = np.sort(prices['neighborhood'].unique())
 pricesData = createPricesByNbhd(prices,nbhds[0])
 for nbhd in nbhds[1:]:
-    pricesdata = pd.concat([pricesData,createRentsnbhd(nyrents,nbhd)], axis = 1)
+    pricesdata = pd.concat([pricesData,createPricesnbhd(nyrents,nbhd)], axis = 1)
     
-pricesData['Date'] = pricesData.index
+pricesData['date'] = pricesData.index
 pricesData = pricesData.dropna(axis=0, how='any')    
 pricesData.to_sql('final_prices_table',
                     engine, if_exists='replace')
@@ -83,19 +83,22 @@ pricesData.to_sql('final_prices_table',
 sql_query_rents = """
 SELECT 
 *
-FROM rents_table a
+FROM rents_table 
 LEFT JOIN
-nbhdtable b ON a.zip_code = b.zip_code
+nbhdtable 
+ON rents_table.regionname = nbhdtable.zip_code
 ;
 """
 rents = pd.read_sql_query(sql_query_rents,con)
+
+
 
 nbhds = np.sort(rents['neighborhood'].unique())
 rentsData = createRentsByNbhd(rents,nbhds[0])
 for nbhd in nbhds[1:]:
     rentsdata = pd.concat([rentsData,createRentsnbhd(rents,nbhd)], axis = 1)
     
-rentsData['Date'] = rentsData.index
+rentsData['date'] = rentsData.index
 rentsData = rentsData.dropna(axis=0, how='any')    
 compRentsdata.to_sql('final_rents_table',
                     engine, if_exists='replace')
