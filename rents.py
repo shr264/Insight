@@ -27,15 +27,35 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM
 from sklearn.preprocessing import MinMaxScaler
-import numpy
-import pandas
+import pystan
+from sqlalchemy import create_engine
+from sqlalchemy_utils import database_exists, create_database
+import psycopg2
 
 from helperfunctions import (findLassoPreds, findLassoAlpha, findProphetPreds, 
                              findRNNPreds, findBayesHSPred)
 
-nbhdtable = pd.read_csv('nbhdTable.csv')
-compRentsdata = pd.read_csv('compRents.csv')
-compPermitsdata = pd.read_csv('permitsData.csv')
+dbname = 'housing'
+username = 'syedrahman'
+
+engine = create_engine('postgres://%s@localhost/%s'%(username,dbname))
+print engine
+
+con = psycopg2.connect(database = dbname, user = username)
+
+sql_query_nbhd = """
+    SELECT
+    neighborhood,zip_code
+    FROM nbhdtable;
+    """
+nbhdtable = pd.read_sql_query(sql_query_nbhd,con)
+
+sql_query_rents = """
+    SELECT
+    *
+    FROM final_rents_table;
+    """
+compPermitsdata = pd.read_sql_query(sql_query_rents,con)
 
 ### this is the differencing
 yy = compRentsdata.drop(['Unnamed: 0'], axis = 1)

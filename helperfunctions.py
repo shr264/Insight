@@ -70,8 +70,7 @@ def findLassoAlpha(alpha,y,X, returnPred = False):
     lassoreg2 = MultiTaskLasso(alpha = alpha,max_iter=1e5)
     lassoreg2.fit(X_train,y_train)
     y_pred2 = lassoreg2.predict(X_test.loc[dt].reshape(1,-1))
-    y_pred2 = pd.DataFrame(y_pred2) 
-    #y_pred2.index = pd.to_datetime(dt)
+    y_pred2 = pd.DataFrame(y_pred2)
     y_pred2.columns = y.columns
     prediction = y_pred2
     X_train = X.loc['2013-10-01':dt]
@@ -80,8 +79,7 @@ def findLassoAlpha(alpha,y,X, returnPred = False):
         lassoreg2 = MultiTaskLasso(alpha = 200,max_iter=1e5)
         lassoreg2.fit(X_train,y_train)
         y_pred2 = lassoreg2.predict(X_test.loc[dt].reshape(1,-1))
-        y_pred2 = pd.DataFrame(y_pred2) 
-        #y_pred2.index = pd.to_datetime(dt)
+        y_pred2 = pd.DataFrame(y_pred2)
         y_pred2.columns = y.columns
         prediction = pd.concat([prediction,y_pred2]) 
         X_train = X.loc['2013-10-01':dt]
@@ -93,8 +91,7 @@ def findLassoAlpha(alpha,y,X, returnPred = False):
         return mean_squared_error(y_test, prediction) 
 
 def findProphetPreds(y, returnPred = True, nbhd = 'Gramercy Park and Murray Hill', 
-                     categ = 'rents'): 
-    #y = yyR
+                     categ = 'rents'):
     y = y[categ+nbhd]
     y_train, y_test = y.loc['2013-10-01':'2016-04-01'], y.loc['2016-05-01':'2017-04-01']
     fby_train = pd.DataFrame(y_train)
@@ -206,8 +203,7 @@ def findLassoAlphaFcst(alpha,y,X, returnPred = False):
     lassoreg2 = MultiTaskLasso(alpha = alpha,max_iter=1e5)
     lassoreg2.fit(X_train,y_train)
     y_pred2 = lassoreg2.predict(X_test.loc[dt].reshape(1,-1))
-    y_pred2 = pd.DataFrame(y_pred2) 
-    #y_pred2.index = pd.to_datetime(dt)
+    y_pred2 = pd.DataFrame(y_pred2)
     y_pred2.columns = y.columns
     prediction = y_pred2
     X_train = X.loc['2013-10-01':dt]
@@ -216,8 +212,7 @@ def findLassoAlphaFcst(alpha,y,X, returnPred = False):
         lassoreg2 = MultiTaskLasso(alpha = 200,max_iter=1e5)
         lassoreg2.fit(X_train,y_train)
         y_pred2 = lassoreg2.predict(X_test.loc[dt].reshape(1,-1))
-        y_pred2 = pd.DataFrame(y_pred2) 
-        #y_pred2.index = pd.to_datetime(dt)
+        y_pred2 = pd.DataFrame(y_pred2)
         y_pred2.columns = y.columns
         prediction = pd.concat([prediction,y_pred2]) 
         X_train = X.loc['2013-10-01':dt]
@@ -262,10 +257,7 @@ def findBayesHSPred(y,X,categ = 'rents',
     beta = np.mean(fit.extract()['beta'], axis=0)
     ypred = np.dot(X_test.loc[dt], beta)
     prediction = ypred
-    #X_train = X.loc['2013-10-01':dt]
-    #y_train = y.loc['2013-10-01':dt]
     for i in range(len(datestotest[1:])):
-        #dt = datestotest[1]
         dt = datestotest[i+1]
         print 'time:',dt,'\n'
         newdata = dict(n=1, p=p, X=X.loc[datestotest[i]].values.reshape(1,-1),
@@ -277,5 +269,58 @@ def findBayesHSPred(y,X,categ = 'rents',
     prediction = pd.Series(prediction)
     prediction.index = y_test.index
     mse = mean_squared_error(y_test,prediction)
-    return((y_test,prediction),mseP)    
+    return((y_test,prediction),mseP)
+
+
+#### These functions are for gettting the data into shape
+
+def createPermitsData(nypermits,job_type, jobtime, column, zip1):
+    nypermits_ = nypermits.loc[nypermits[column]==job_type][[jobtime, column]].groupby([jobtime], as_index=False).count()
+    nypermits_.columns = [jobtime,job_type+str(zip1)]
+    return nypermits_
+
+def createPermitByNbhd(nbhd,permits):
+    nypermits = permits.loc[permits.NeighborHood == nbhd]
+    nypermits.expiration_date = pd.to_datetime(nypermits.expiration_date)
+    nypermits = nypermits.sort_values(by = 'expiration_date')
+    nypermits.expiration_date = pd.to_datetime(nypermits.expiration_date).dt.strftime('%Y-%m')
+    nypermits.residential = nypermits.residential.fillna('NO')
+    nypermits.work_type = nypermits.work_type.fillna('Unknown')
+    
+    nypermits['comp'] = (nypermits['job_type'])
+    nypermits['comp'] = nypermits['comp'].str.strip()
+    nypermits['comp'] = [x.strip().replace(' ', '') for x in nypermits['comp']]
+    
+    idx = sorted(nypermits.comp.unique())
+    permits_ = createPermitsData(nypermits,idx[0], 'expiration_date', 'comp', nbhd)
+    for job in idx[1:]:
+        permits_ = permits.merge(createPermitsData(nypermits,job,'expiration_date', 'comp', nbhd),how = 'outer',on = 'expiration_date')
+
+    permits_ = permits_.fillna(0)
+    permits_.index = permits_.expiration_date
+    permits_= permits_.drop('expiration_date', axis = 1)
+    permits_.index = pd.to_datetime(permits_.index)
+
+    return permits_
+
+def createPricesByNbhd(nyprices,nbhd):
+    nyprices_ = nyprices.loc[nyprices.NeighborHood == nbhd]
+    nyprices_ = nyprices_.transpose()[7:].dropna(thresh=1)
+    nyprices_ = nyprices_.convert_objects(convert_numeric=True).dropna(axis=0)
+    nyprices_ = nyprices_.mean(axis=1)
+    nyprices_.index = pd.to_datetime(nyprices_.index)
+    nyprices_ = pd.DataFrame(nyprices_)
+    nyprices_.columns = ['prices'+nbhd]
+    return nyprices_
+
+
+def createRentsByNbhd(nyprices,nbhd):
+    nyprices_ = nyprices.loc[nyprices.NeighborHood == nbhd]
+    nyprices_ = nyprices_.transpose()[7:].dropna(thresh=1)
+    nyprices_ = nyprices_.convert_objects(convert_numeric=True).dropna(axis=0)
+    nyprices_ = nyprices_.mean(axis=1)
+    nyprices_.index = pd.to_datetime(nyprices_.index)
+    nyprices_ = pd.DataFrame(nyprices_)
+    nyprices_.columns = ['rents'+nbhd]
+    return nyprices_
     

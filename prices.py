@@ -28,13 +28,34 @@ from keras.layers import Dense
 from keras.layers import LSTM
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 import pystan
+from sqlalchemy import create_engine
+from sqlalchemy_utils import database_exists, create_database
+import psycopg2
 
 from helperfunctions import (findLassoPreds, findLassoAlpha, findProphetPreds, 
                              findRNNPreds, findBayesHSPred)
- 
-nbhdtable = pd.read_csv('nbhdTable.csv')
-compPricesdata = pd.read_csv('compPrices.csv')
-compPermitsdata = pd.read_csv('permitsData.csv')
+
+dbname = 'housing'
+username = 'syedrahman'
+
+engine = create_engine('postgres://%s@localhost/%s'%(username,dbname))
+print engine
+
+con = psycopg2.connect(database = dbname, user = username)
+
+sql_query_nbhd = """
+    SELECT
+    neighborhood,zip_code
+    FROM nbhdtable;
+    """
+nbhdtable = pd.read_sql_query(sql_query_nbhd,con)
+
+sql_query_prices = """
+    SELECT
+    *
+    FROM final_prices_table;
+    """
+compPricesdata = pd.read_sql_query(sql_query_prices,con)
 
 ### this is the differencing
 yyP = compPricesdata.drop(['Unnamed: 0'], axis = 1)
