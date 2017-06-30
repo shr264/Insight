@@ -57,6 +57,13 @@ sql_query_rents = """
     """
 compPermitsdata = pd.read_sql_query(sql_query_rents,con)
 
+sql_query_permits = """
+    SELECT
+    *
+    FROM final_permits_data_table;
+    """
+compPermitsdata = pd.read_sql_query(sql_query_permits,con)
+
 ### this is the differencing
 yy = compRentsdata.drop(['Unnamed: 0'], axis = 1)
 yy.index = yy.Date

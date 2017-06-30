@@ -57,6 +57,13 @@ sql_query_prices = """
     """
 compPricesdata = pd.read_sql_query(sql_query_prices,con)
 
+sql_query_permits = """
+    SELECT
+    *
+    FROM final_permits_data_table;
+    """
+compPermitsdata = pd.read_sql_query(sql_query_permits,con)
+
 ### this is the differencing
 yyP = compPricesdata.drop(['Unnamed: 0'], axis = 1)
 yyPdates = yyP.Date
