@@ -18,7 +18,7 @@ For the first part, we used the concept of Granger causality <https://en.wikiped
 
 The table clearly indicates that the probability that Permits have a causal effect on Home values and Rents is much higher than the other way round.
 
-For the predictive modeling we are interested in leveraging both home values and rent information as well as permits data from all neighborhoods. Thus we use an L1 regularized Vector Autoregressive model (VAR), a Bayesian Autoregressive model (BAR) with a horseshoe prior <http://proceedings.mlr.press/v5/carvalho09a/carvalho09a.pdf>, a Recurrent Neural Network (RNN) with an LSTM layer and compared them Facebook's Prophet <https://facebookincubator.github.io/prophet/>. For the VAR, RNN and BAR models we used 2 autoregressive terms.
+For the predictive modeling we are interested in leveraging both home values and rent information as well as permits data from all neighborhoods. Thus we use an L1 regularized Vector Autoregressive model (VAR), a Bayesian Autoregressive model (BAR) with a horseshoe prior <http://proceedings.mlr.press/v5/carvalho09a/carvalho09a.pdf>, a Recurrent Neural Network (RNN) with an LSTM layer and compared them Facebook's Prophet <https://facebookincubator.github.io/prophet/>. For the VAR, RNN and BAR models we used 2 autoregressive terms. Please look at <http://www.rentorbuy.press/explanation> for more details.
 
 ![](Readme_files/figure-markdown_github/predict,%20fig_width:%204,%20fig_height:%203-1.png)![](Readme_files/figure-markdown_github/predict,%20fig_width:%204,%20fig_height:%203-2.png)
 
