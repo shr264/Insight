@@ -84,6 +84,14 @@ Xdates = X.Date
 X = X.drop(['Date'],axis = 1).fillna(0)
 Xcolumns = X.columns
 
+### here we are setting up the data from VAR - more details on the website
+Y_var = pd.concat([y,X], axis = 1)
+Y_var_1 = Y_var.shift(1).fillna(0)
+Y_var_2 = Y_var_1.shift(1).fillna(0)
+Z_ones = pd.DataFrame(np.ones(Y_var_1.shape[0]))
+Z_ones.index = Y_var_1.index
+Z_var = pd.concat([Z_ones,Y_var_1,Y_var_1], axis = 1)
+
 ### scaling the X data
 Xscaler = StandardScaler()
 X = Xscaler.fit_transform(X)
@@ -106,11 +114,11 @@ yyR = yy[i1.isin(i2)]
 alpha = np.linspace(3,20, 20)
 mse = findLassoAlpha(alpha[0],y,X)
 for i in range(len(alpha[1:])):
-    mse = np.append(mse,findLassoAlpha(alpha[i],y,X))  
+    mse = np.append(mse,findLassoAlpha(alpha[i],Y_var,Z_var))  
 
 alphastar = alpha[np.where(mse == np.amin(mse))[0][0]]  
 
-rentPredsVAR = findLassoPreds(alphastar,y,X)
+rentPredsVAR = findLassoPreds(alphastar,Y_var,Z_var)
 
 prophetRPreds = findProphetPreds(yyR,X, categ = 'rents')
     

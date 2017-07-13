@@ -51,7 +51,7 @@ def findLassoPreds(alpha,y,X, returnPred = True):
     X_train = X.loc['2013-10-01':dt]
     y_train = y.loc['2013-10-01':dt]
     for dt in datestotest[1:]:
-        lassoreg2 = MultiTaskLasso(alpha = 200,max_iter=1e5)
+        lassoreg2 = MultiTaskLasso(alpha = alpha,max_iter=1e5)
         lassoreg2.fit(X_train,y_train)
         y_pred2 = lassoreg2.predict(X_test.loc[dt].reshape(1,-1))
         y_pred2 = pd.DataFrame(y_pred2) 
@@ -76,7 +76,7 @@ def findLassoAlpha(alpha,y,X, returnPred = False):
     X_train = X.loc['2013-10-01':dt]
     y_train = y.loc['2013-10-01':dt]
     for dt in datestotest[1:]:
-        lassoreg2 = MultiTaskLasso(alpha = 200,max_iter=1e5)
+        lassoreg2 = MultiTaskLasso(alpha = alpha,max_iter=1e5)
         lassoreg2.fit(X_train,y_train)
         y_pred2 = lassoreg2.predict(X_test.loc[dt].reshape(1,-1))
         y_pred2 = pd.DataFrame(y_pred2)
@@ -280,13 +280,10 @@ def createPermitsData(nypermits,job_type, jobtime, column, zip1):
     return nypermits_
 
 def createPermitByNbhd(nbhd,permits):
-    nypermits = permits.loc[permits.NeighborHood == nbhd]
+    nypermits = permits.loc[permits.neighborhood == nbhd]
     nypermits.expiration_date = pd.to_datetime(nypermits.expiration_date)
     nypermits = nypermits.sort_values(by = 'expiration_date')
     nypermits.expiration_date = pd.to_datetime(nypermits.expiration_date).dt.strftime('%Y-%m')
-    nypermits.residential = nypermits.residential.fillna('NO')
-    nypermits.work_type = nypermits.work_type.fillna('Unknown')
-    
     nypermits['comp'] = (nypermits['job_type'])
     nypermits['comp'] = nypermits['comp'].str.strip()
     nypermits['comp'] = [x.strip().replace(' ', '') for x in nypermits['comp']]
@@ -300,11 +297,10 @@ def createPermitByNbhd(nbhd,permits):
     permits_.index = permits_.expiration_date
     permits_= permits_.drop('expiration_date', axis = 1)
     permits_.index = pd.to_datetime(permits_.index)
-
     return permits_
 
 def createPricesByNbhd(nyprices,nbhd):
-    nyprices_ = nyprices.loc[nyprices.NeighborHood == nbhd]
+    nyprices_ = nyprices.loc[nyprices.neighborhood == nbhd]
     nyprices_ = nyprices_.transpose()[7:].dropna(thresh=1)
     nyprices_ = nyprices_.convert_objects(convert_numeric=True).dropna(axis=0)
     nyprices_ = nyprices_.mean(axis=1)
@@ -315,7 +311,7 @@ def createPricesByNbhd(nyprices,nbhd):
 
 
 def createRentsByNbhd(nyprices,nbhd):
-    nyprices_ = nyprices.loc[nyprices.NeighborHood == nbhd]
+    nyprices_ = nyprices.loc[nyprices.neighborhood == nbhd]
     nyprices_ = nyprices_.transpose()[7:].dropna(thresh=1)
     nyprices_ = nyprices_.convert_objects(convert_numeric=True).dropna(axis=0)
     nyprices_ = nyprices_.mean(axis=1)

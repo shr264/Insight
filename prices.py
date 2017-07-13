@@ -88,6 +88,14 @@ Xdates = X.Date
 X = X.drop(['Date'],axis = 1).fillna(0)
 Xcolumns = X.columns
 
+### here we are setting up the data from VAR - more details on the website
+Y_var = pd.concat([yP,X], axis = 1)
+Y_var_1 = Y_var.shift(1).fillna(0)
+Y_var_2 = Y_var_1.shift(1).fillna(0)
+Z_ones = pd.DataFrame(np.ones(Y_var_1.shape[0]))
+Z_ones.index = Y_var_1.index
+Z_var = pd.concat([Z_ones,Y_var_1,Y_var_1], axis = 1)
+
 ### scaling the X data
 Xscaler = StandardScaler()
 X = Xscaler.fit_transform(X)
@@ -110,12 +118,12 @@ X = X[i2.isin(i1)]
 alpha = np.linspace(0.8,2.5,20)
 mseP = findLassoAlpha(alpha[0],yP,X)
 for i in range(len(alpha[1:])):
-    mseP = np.append(mseP,findLassoAlpha(alpha[i],yP,X))  
+    mseP = np.append(mseP,findLassoAlpha(alpha[i],Y_var,Z_var))  
 
 alphastarP = alpha[np.where(mseP == np.amin(mseP))[0][0]]  
 
 
-pricePredsVAR = findLassoPreds(alphastarP,yP,X) 
+pricePredsVAR = findLassoPreds(alphastarP,Y_var,Z_var) 
 
 np.sqrt(mean_squared_error(pricePredsVAR[0][0]['pricesGramercy Park and Murray Hill'],
  pricePredsVAR[0][1]['pricesGramercy Park and Murray Hill']))
