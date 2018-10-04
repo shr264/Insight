@@ -1,7 +1,7 @@
 Rent or Buy
 -----------
 
-The goal of my Insight project was to create a web app <http://www.rentorbuy.press> that helps users navigate the NYC residential real estate market based on permits information. The permits data is available from <https://data.cityofnewyork.us/Housing-Development/DOB-Permit-Issuance/ipu4-2q9a> and the home values and rents data is available from Zillow <https://www.zillow.com/research/data/>. The project can be divided into three parts. The first part of the project was to understand the causal impacts of permits on rents or home values, or vice versa. The second was to incorporate permits information into a predictive model. Finally, we tried to understand, which permits, if any, affect home values and rents.
+The goal of my Insight project was to create a web app <http://randomnumbergator.com/input> that helps users navigate the NYC residential real estate market based on permits information. The permits data is available from <https://data.cityofnewyork.us/Housing-Development/DOB-Permit-Issuance/ipu4-2q9a> and the home values and rents data is available from Zillow <https://www.zillow.com/research/data/>. The project can be divided into three parts. The first part of the project was to understand the causal impacts of permits on rents or home values, or vice versa. The second was to incorporate permits information into a predictive model. Finally, we tried to understand, which permits, if any, affect home values and rents.
 
 ![Rents vs Permits](images/rentvspermitsclass_24.png) ![Prices vs Permits](images/pricesvspermitsclass_24.png)
 
